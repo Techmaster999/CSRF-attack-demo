@@ -4,14 +4,14 @@ from http import cookies
 
 # Users for the demo
 users = {
-    'daniel', 'password123'
-    'pierce', 'SuperSecretPassword123!'
+    'daniel': 'password123',
+    'pierce': 'SuperSecretPassword123!'
 }
 
 # accounts balances for the demo
 balances = {
-    'daniel', 1000,
-    'pierce', 0
+    'daniel': 1000,
+    'pierce': 0
 }
 
 class VulnerableBankHandler(BaseHTTPRequestHandler):
@@ -32,20 +32,20 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
         if self.path == '/':
             if not user:
                 self.send_response(302)
-                self.send_header('Location', 'Login')
-                self.end_headers
-            return
+                self.send_header('Location', 'http://localhost:5000/login')
+                self.end_headers()
+            
 
             # main page logic
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
-            self.end_headers
+            self.end_headers()
 
             html = f"""
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Demo Bank - Dashboard</title>
+                <title>Simple Bank - Dashboard</title>
                 <style>
                     body {{ font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 50px; }}
                     .container {{ max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }}
@@ -57,7 +57,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
             </head>
             <body>
                 <div class="container">
-                    <h2>🏦 Demo Bank</h2>
+                    <h2>Simple Bank</h2>
                     <p>Welcome, <b>{user.capitalize()}</b>!</p>
                     
                     <div class="balance-box">
@@ -82,7 +82,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
         elif self.path == '/login':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
-            self.end_headers
+            self.end_headers()
         
             html = """
             <!DOCTYPE html>
@@ -100,9 +100,9 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                 <div class="container">
                     <h2> Bank Login</h2>
                     <form action="/login" method="POST">
-                        <label>Username (try 'alice'):</label>
+                        <label>Username:</label>
                         <input type="text" name="username" required>
-                        <label>Password (try 'password123'):</label>
+                        <label>Password:</label>
                         <input type="password" name="password" required>
                         <input type="submit" value="Log In">
                     </form>
@@ -123,19 +123,20 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
         # login logic
         if self.path == '/login':
             username = form_data.get('username', [''])[0].lower()
-            password = form_data.get('')[0]
+            password = form_data.get('password', [''])[0]
 
             if username in users and users[username] == password:
 
-                self.send_response(302)
+                self.send_response(303)
                 self.send_header('Set-Cookie', f'user_session={username}; Path=/')
-                self.send_header('Location', '/')
+                self.send_header('Location', 'http://localhost:5000/')
+                self.send_header('Content-Length', '0')
                 self.end_headers()
             else:
                 self.send_response(401)
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
-                self.wfile.write(b"Invalid credentials. <a href='/login'> Try again</a>")
+                self.wfile.write(b"Invalid credentials. <a href='http://localhost:5000/login'> Try again</a>")
 
         # Process Transfer (Vulnarable Endpoint)
         elif self.path == '/transfer':
@@ -149,7 +150,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
             
             recipent = form_data.get('to_user', [''])[0]
             try:
-                amount - int(form_data.get('amount', [0])[0])
+                amount = int(form_data.get('amount', [0])[0])
             except ValueError:
                 amount = 0
             
