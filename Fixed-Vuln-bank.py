@@ -163,6 +163,8 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                 csrf_tokens.pop(user, None)
                 self.wfile.write(b"<h1>403 Forbidden</h1><p>CSRF Security Token Missing or Invalid.</p>")
 
+                return
+
             recipent = form_data.get('to_user', [''])[0]
             try:
                 amount = int(form_data.get('amount', [0])[0])
