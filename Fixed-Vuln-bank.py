@@ -46,6 +46,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
             # main page logic
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
+            self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
             self.end_headers()
 
             html = f"""
@@ -73,7 +74,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                     
                     <h3>Transfer Funds</h3>
                     <form action="/transfer" method="POST">
-                        <input type ="hidden" name "csrf_token" value ="{token}">
+                        <input type="hidden" name="csrf_token" value="{token}">
                         <label>Recipient Username:</label>
                         <input type="text" name="to_user" required>
                         <label>Amount ($):</label>
@@ -159,6 +160,12 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
             # Mitigation using csrf_tokens
             submitted_token = form_data.get('csrf_token', [''])[0]
             expected_token = csrf_tokens.get(user)
+
+            print("\n--- DEBUG INFO ---")
+            print(f"Logged in User: {user}")
+            print(f"Token from Form: '{submitted_token}'")
+            print(f"Token in Server RAM: '{expected_token}'")
+            print("------------------\n")
 
             if not submitted_token or submitted_token != expected_token:
                 self.send_response(403)
