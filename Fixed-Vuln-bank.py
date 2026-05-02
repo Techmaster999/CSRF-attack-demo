@@ -152,7 +152,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                 self.wfile.write(b"Unauthorized. Please log in first.")
                 return
             
-            # Mitigation through using csrf_tokens
+            # Mitigation using csrf_tokens
             submitted_token = form_data.get('csrf_token', [''])[0]
             expected_token = csrf_tokens.get(user)
 
