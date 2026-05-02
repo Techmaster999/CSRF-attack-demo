@@ -34,6 +34,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                 self.send_response(302)
                 self.send_header('Location', 'http://localhost:5000/login')
                 self.end_headers()
+                return 
             
 
             # main page logic

