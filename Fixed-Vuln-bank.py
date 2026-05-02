@@ -39,6 +39,9 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 return 
             
+            if user not in csrf_tokens:
+                csrf_tokens[user] = secrets.token_hex(16)
+            token = csrf_tokens[user]
 
             # main page logic
             self.send_response(200)
@@ -160,9 +163,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                 self.send_response(403)
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
-                csrf_tokens.pop(user, None)
                 self.wfile.write(b"<h1>403 Forbidden</h1><p>CSRF Security Token Missing or Invalid.</p>")
-
                 return
 
             recipent = form_data.get('to_user', [''])[0]
@@ -178,7 +179,6 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
-                csrf_tokens.pop(user, None)
                 success_html = f"Successfully transfered ${amount} to {recipent}. <br><a href='/'>Go back to Dashboard</a>"
                 self.wfile.write(success_html.encode("utf-8"))
             else:
