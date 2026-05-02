@@ -73,6 +73,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                     
                     <h3>Transfer Funds</h3>
                     <form action="/transfer" method="POST">
+                        <input type ="hidden" name "csrf_token" value ="{token}">
                         <label>Recipient Username:</label>
                         <input type="text" name="to_user" required>
                         <label>Amount ($):</label>
