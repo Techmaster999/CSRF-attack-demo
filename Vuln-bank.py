@@ -4,14 +4,14 @@ from http import cookies
 
 # Users for the demo
 users = {
-    'daniel': 'password123',
-    'pierce': 'SuperSecretPassword123!'
+    'victim': 'password123',
+    'attacker': 'SuperSecretPassword123!'
 }
 
 # accounts balances for the demo
 balances = {
-    'daniel': 1000,
-    'pierce': 0
+    'victim': 1000,
+    'attacker': 0
 }
 
 class VulnerableBankHandler(BaseHTTPRequestHandler):

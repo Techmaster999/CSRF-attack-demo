@@ -7,14 +7,14 @@ csrf_tokens = {}
 
 # Users for the demo
 users = {
-    'daniel': 'password123',
-    'pierce': 'SuperSecretPassword123!'
+    'victim': 'password123',
+    'attacker': 'SuperSecretPassword123!'
 }
 
 # accounts balances for the demo
 balances = {
-    'daniel': 1000,
-    'pierce': 0
+    'victim': 1000,
+    'attacker': 0
 }
 
 class VulnerableBankHandler(BaseHTTPRequestHandler):
@@ -35,7 +35,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
         if self.path == '/':
             if not user:
                 self.send_response(302)
-                self.send_header('Location', 'http://localhost:5000/login')
+                self.send_header('Location', 'http://localhost:5001/login')
                 self.end_headers()
                 return 
             
@@ -138,14 +138,14 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
 
                 self.send_response(303)
                 self.send_header('Set-Cookie', f'user_session={username}; Path=/; SameSite=Lax') # Now has SameSite Lax instead of none
-                self.send_header('Location', 'http://localhost:5000/')
+                self.send_header('Location', 'http://localhost:5001/')
                 self.send_header('Content-Length', '0')
                 self.end_headers()
             else:
                 self.send_response(401)
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
-                self.wfile.write(b"Invalid credentials. <a href='http://localhost:5000/login'> Try again</a>")
+                self.wfile.write(b"Invalid credentials. <a href='http://localhost:5001/login'> Try again</a>")
 
         # Process Transfer (Vulnarable Endpoint)
         elif self.path == '/transfer':
@@ -195,7 +195,7 @@ class VulnerableBankHandler(BaseHTTPRequestHandler):
                 self.wfile.write(b"Insufficient funds.")
 
 # run the server logic
-def run(server_class=HTTPServer, handler_class=VulnerableBankHandler, port=5000):
+def run(server_class=HTTPServer, handler_class=VulnerableBankHandler, port=5001):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print(f"Starting Simple Bank server on port {port}")
